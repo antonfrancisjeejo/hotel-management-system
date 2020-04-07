@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Search-Hotel Management System</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="/css/searchResults.css" rel="stylesheet">
+    <link rel="icon" href="/icon.ico">
+  </head>
+  <body class="bg-light">
+    <div class="container">
+  <div class="py-5 text-center">
+    <h2>Checkout form</h2>
+    <p class="lead">Below is an example form built entirely with Bootstrap’s form controls. Each required form group has a validation state that can be triggered by attempting to submit the form without completing it.</p>
+  </div>
+    <div class="col-md-8 order-md-1">
+      <h4 class="mb-3"><%= name %> Information</h4>
+      <form class="needs-validation" action="/updateResults" method="post">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="inputFirstName4">ID</label>
+            <input type="text" class="form-control" name="id" value="<%= userId %>">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="inputLastName4">Room Number</label>
+            <input type="text" class="form-control" name="roomNo" value="<%= roomNo %>">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="inputEmail4">Name</label>
+          <input type="text" class="form-control" name="name" value="<%= name %>">
+        </div>
+
+        <div class="mb-3">
+          <label for="inputMobile4">Mobile No</label>
+          <input type="tel" class="form-control" name="mobileNo" pattern="[0-9]{10}" value="<%= mobileNo %>">
+        </div>
+
+        <div class="mb-3">
+          <label for="inputAadhaar4">Aadhaar Card No</label>
+          <input type="text" class="form-control" name="aadhaarNo" value="<%= aadhaarNo %>">
+        </div>
+
+        <div class="mb-3">
+          <label for="inputAddress2">Address</label>
+          <input type="text" class="form-control" name="address" value="<%= address %>">
+        </div>
+
+        <div class="row">
+          <div class="col-md-5 mb-3">
+            <label for="inputCity">City</label>
+            <input type="text" class="form-control" name="city" value="<%= city %>">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="inputState">State</label>
+            <input type="text" class="form-control" name="state" value="<%= state %>">
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="inputZip">Zip</label>
+            <input type="text" class="form-control" name="zip" value="<%= zip %>">
+          </div>
+        </div>
+        <hr class="mb-4">
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Update</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">&copy; Anton Francis Jeejo</p>
+  </footer>
+</div>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+      <script>window.jQuery || document.write('<script src="/docs/4.4/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/docs/4.4/dist/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+        <script src="form-validation.js"></script></body>
+</html>
