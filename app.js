@@ -1,6 +1,11 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const session = require('express-session');
+const passport = require('passport');
+const passportLocalMongoose = require('passport-local-mongoose');
+
 
 const app = express();
 
@@ -11,25 +16,35 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb+srv://jeejo13:jeejo123@cluster0-q3jj1.mongodb.net/hotelDB", {
+app.use(session({
+  secret:"This is my secret key",
+  resave: false,
+  saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+mongoose.connect(process.env.DB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useFindAndModify: false
+  useFindAndModify: false,
+  useCreateIndex:true
 });
 
-const loginSchema = {
-  name: String,
-  password: String
-};
+const userSchema = new mongoose.Schema({
+  email: String,
+  password:String
+});
 
-const Login = mongoose.model("Login", loginSchema);
+userSchema.plugin(passportLocalMongoose);
 
-// const login = new Login({
-//   name:"admin",
-//   password:"admin"
-// });
-//
-// login.save();
+const User = new mongoose.model("User", userSchema);
+
+passport.use(User.createStrategy());
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 const customerSchema = {
   _id: {
@@ -76,56 +91,96 @@ app.get("/", (req, res) => {
 });
 
 app.get("/admin", (req, res) => {
-  res.render("admin");
+  if(req.isAuthenticated()){
+    res.render("admin");
+  }
+  else{
+    res.redirect("/");
+  }
 });
 
 app.get("/register", (req, res) => {
-  res.render("register");
+  if(req.isAuthenticated()){
+    res.render("register");
+  }
+  else{
+    res.redirect("/");
+  }
 });
 
 app.get("/search", (req, res) => {
-  res.render("search", {
-    option: "Search",
-    buttonName: "Search",
-    url: "search",
-    alturl: "search"
-  });
+  if(req.isAuthenticated()){
+    res.render("search", {
+      option: "Search",
+      buttonName: "Search",
+      url: "search",
+      alturl: "search"
+    });
+  }
+  else{
+    res.redirect("/");
+  }
 });
 
 app.get("/update", (req, res) => {
-  res.render("search", {
-    option: "Update",
-    buttonName: "Search",
-    url: "search",
-    alturl: "update"
-  });
+  if(req.isAuthenticated()){
+    res.render("search", {
+      option: "Update",
+      buttonName: "Search",
+      url: "search",
+      alturl: "update"
+    });
+  }
+  else{
+    res.redirect("/");
+  }
 });
 
 app.get("/delete", (req, res) => {
-  res.render("search", {
-    option: "Delete",
-    buttonName: "Delete",
-    url: "search",
-    alturl: "delete"
-  });
+  if(req.isAuthenticated()){
+    res.render("search", {
+      option: "Delete",
+      buttonName: "Delete",
+      url: "search",
+      alturl: "delete"
+    });
+  }
+  else{
+    res.redirect("/");
+  }
+});
+
+app.get("/logout",(req,res)=>{
+  req.logout();
+  res.redirect("/");
 });
 
 app.post("/", (req, res) => {
-  const userName = req.body.userName;
-  const userPass = req.body.userPassword;
-  if (userName === "admin") {
-    Login.findOne({
-      name: userName
-    }, (err, foundList) => {
-      if (foundList.password === userPass) {
+
+  // User.register({ username:req.body.username },req.body.password,(err,user)=>{
+  //   if(err){
+  //     console.log(err);
+  //     res.redirect("/");
+  //   }else{
+  //     passport.authenticate("local")(req,res,()=>{
+  //       res.redirect("/admin");
+  //     });
+  //   }
+  // });
+  const user = new User({
+    username: req.body.username,
+    password: req.body.password
+  });
+  req.login(user,(err)=>{
+    if(err){
+      console.log(err);
+    }
+    else{
+      passport.authenticate("local")(req,res,()=>{
         res.redirect("/admin");
-      } else {
-        res.render("failure");
-      }
-    });
-  } else {
-    res.render("failure");
-  }
+      });
+    }
+  });
 });
 
 app.post("/admin", (req, res) => {
